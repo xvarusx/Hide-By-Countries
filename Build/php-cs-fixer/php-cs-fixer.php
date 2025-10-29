@@ -5,7 +5,7 @@ use TYPO3\CodingStandards\CsFixerConfig;
 
 $config = CsFixerConfig::create();
 $config->setHeader(
-    'This file is part of the "news" Extension for TYPO3 CMS.
+    'This file is part of the "hidebycountries" Extension for TYPO3 CMS.
 
 For the full copyright and license information, please read the
 LICENSE.txt file that was distributed with this source code.',
@@ -56,7 +56,7 @@ $config->setFinder(
         'no_useless_else' => true,
         'no_useless_nullsafe_operator' => true,
         'no_whitespace_in_blank_line' => true,
-        'ordered_imports' => true,
+        'ordered_imports' => false,
         'php_unit_construct' => ['assertions' => ['assertEquals', 'assertSame', 'assertNotEquals', 'assertNotSame']],
         'php_unit_mock_short_will_return' => true,
         'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
@@ -72,6 +72,7 @@ $config->setFinder(
         ],
         'return_type_declaration' => ['space_before' => 'none'],
         'single_quote' => true,
+        'single_line_empty_body' => false,
         'single_line_comment_style' => ['comment_types' => ['hash']],
         'single_trait_insert_per_statement' => true,
         'trailing_comma_in_multiline' => ['elements' => ['arrays']],

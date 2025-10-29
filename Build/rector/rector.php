@@ -7,11 +7,9 @@ use Rector\ValueObject\PhpVersion;
 use Ssch\TYPO3Rector\CodeQuality\General\ConvertImplicitVariablesToExplicitGlobalsRector;
 use Ssch\TYPO3Rector\CodeQuality\General\ExtEmConfRector;
 use Ssch\TYPO3Rector\CodeQuality\General\GeneralUtilityMakeInstanceToConstructorPropertyRector;
-use Ssch\TYPO3Rector\CodeQuality\General\InjectMethodToConstructorInjectionRector;
 use Ssch\TYPO3Rector\Configuration\Typo3Option;
 use Ssch\TYPO3Rector\Set\Typo3LevelSetList;
 use Ssch\TYPO3Rector\Set\Typo3SetList;
-use Ssch\TYPO3Rector\TYPO311\v0\DateTimeAspectInsteadOfGlobalsExecTimeRector;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -43,13 +41,5 @@ return RectorConfig::configure()
         ExtEmConfRector::PHP_VERSION_CONSTRAINT => '8.1.0-8.4.99',
         ExtEmConfRector::TYPO3_VERSION_CONSTRAINT => '12.4.37-13.9.99',
         ExtEmConfRector::ADDITIONAL_VALUES_TO_BE_REMOVED => [],
-    ])
-    ->withSkip([
-        InjectMethodToConstructorInjectionRector::class => [
-            __DIR__ . '/../../Classes/Controller/AdministrationController.php',
-            __DIR__ . '/../../Classes/Domain/Repository/AbstractDemandedRepository.php',
-            __DIR__ . '/../../Classes/Service/SettingsService.php',
-            __DIR__ . '/../../Classes/ViewHelpers/',
-        ]
     ])
 ;

@@ -13,7 +13,6 @@ use Oussema\HideByCountries\Domain\Model\ApiService;
 use Oussema\HideByCountries\Domain\Model\CountryCode;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use Oussema\HideByCountries\Utility\GeoLocationException;
-use Oussema\HideByCountries\Utility\Apis\GeoLocationApiInterface;
 
 class IpstackGeoLocationService implements GeoLocationApiInterface
 {
@@ -35,7 +34,7 @@ class IpstackGeoLocationService implements GeoLocationApiInterface
                     'headers' => [
                         'access-control-allow-origin' => '*',
                         'access_key' => $apiService->getApiKey(),
-                    ]
+                    ],
                 ]
             );
 

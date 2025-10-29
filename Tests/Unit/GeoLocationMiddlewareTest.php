@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Oussema\HideByCountries\Tests\Unit;
@@ -26,7 +27,7 @@ final class GeoLocationMiddlewareTest extends TestCase
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getCookieParams')->willReturn([]);
         $request->method('getServerParams')->willReturn(['REMOTE_ADDR' => '1.2.3.4']);
-        
+
         $repo->method('findCountryForIp')->willReturn(CountryCode::fromString('DE'));
 
         $response = $this->createMock(ResponseInterface::class);
@@ -37,6 +38,6 @@ final class GeoLocationMiddlewareTest extends TestCase
 
         $result = $middleware->process($request, $handler);
 
-        $this->assertInstanceOf(ResponseInterface::class, $result);
+        self::assertInstanceOf(ResponseInterface::class, $result);
     }
 }

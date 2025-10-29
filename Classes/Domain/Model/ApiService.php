@@ -12,8 +12,6 @@ class ApiService
     {
         $this->setApiService($extensionConfiguration);
     }
-
-
     private function setApiService(ExtensionConfiguration $extensionConfiguration): void
     {
         $config = $extensionConfiguration->get('hidebycountries');
@@ -28,9 +26,9 @@ class ApiService
     {
         if (empty($apiEndPoint) && filter_var($apiEndPoint, FILTER_VALIDATE_URL) === false) {
             throw new \InvalidArgumentException('Service URL cannot be empty and must be a valid URL');
-        } else {
-            $this->apiEndPoint = $apiEndPoint;
         }
+        $this->apiEndPoint = $apiEndPoint;
+
     }
     public function getApiKey(): String
     {

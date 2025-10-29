@@ -8,7 +8,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use Oussema\HideByCountries\Domain\Model\ApiService;
 use Oussema\HideByCountries\Domain\Model\CountryCode;
 use Oussema\HideByCountries\Domain\Model\IpAddress;
-use Oussema\HideByCountries\Utility\Apis\GeoLocationApiInterface;
 use Oussema\HideByCountries\Utility\GeoLocationException;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -34,7 +33,7 @@ final class AetherEpiasGeoLocationService implements GeoLocationApiInterface
                 [
                     'headers' => [
                         'access-control-allow-origin' => '*',
-                    ]
+                    ],
                 ]
             );
 

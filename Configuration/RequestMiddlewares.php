@@ -1,6 +1,7 @@
 <?php
 
 use Oussema\HideByCountries\Middleware\GeoLocationMiddleware;
+
 return [
     'frontend' => [
         'middleware-geolocation' => [

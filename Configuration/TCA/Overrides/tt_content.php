@@ -1,4 +1,5 @@
 <?php
+
 use Oussema\HideByCountries\Hooks\GetCountriesTca;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 

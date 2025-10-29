@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Oussema\HideByCountries\Middleware;
 
-use Oussema\HideByCountries\Domain\Model\ApiService;
 use Oussema\HideByCountries\Domain\Repository\GeoLocationRepository;
 use Oussema\HideByCountries\Domain\Model\IpAddress;
 use Oussema\HideByCountries\Domain\Model\CountryCode;
@@ -38,7 +37,7 @@ class GeoLocationMiddleware implements MiddlewareInterface
         } catch (\Exception $e) {
             $this->logger->error('Failed to determine user country', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Oussema\HideByCountries\Tests\Unit;
@@ -10,10 +11,10 @@ class CountryCodeTest extends TestCase
 {
     public function testCountryCodeFormat(): void
     {
-        $countryCodes = ['US', 'FR', 'DE', 'JP', 'IN','USA','tn'];
 
+        $countryCodes = ['US', 'FR', 'DE', 'JP', 'IN', 'USA', 'tn'];
         foreach ($countryCodes as $code) {
-            $this->assertMatchesRegularExpression('/^[A-Z]{2}$/', $code, "Country code {$code} is not in the correct format.");
+            self::assertMatchesRegularExpression('/^[A-Z]{2}$/', $code, "Country code {$code} is not in the correct format.");
         }
     }
     public function testInvalidFormatThrows(): void
