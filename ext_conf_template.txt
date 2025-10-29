@@ -1,0 +1,9 @@
+  # cat=Development Mode/enable/10; type=boolean; label=Active Developemnt Mode
+  developemntMode = 1
+  # cat=Development Mode; type=text; label=Set public ip address for geo location service (to override localhost ip address during testing) 
+  publicIpAddressForTesting =
+  # cat=CustomApi; type=text; label=Set Geolocation api endpoint (to override the default Geolocation api endpoint)
+  apiEndPoint = 
+  # cat=CustomApi; type=text; label=Set Geolocation api key (u can leave this empty if u are using a service with no api key)
+  apiKey =
+

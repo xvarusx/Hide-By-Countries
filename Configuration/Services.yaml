@@ -1,0 +1,29 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Oussema\HideByCountries\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Domain/Model/*'
+  Oussema\HideByCountries\Middleware\GeoLocationMiddleware:
+    arguments:
+      - $geoLocationRepository: '@Oussema\HideByCountries\Domain\Repository\GeoLocationRepository'
+      - $extensionConfiguration: '@TYPO3\CMS\Core\Configuration\ExtensionConfiguration'
+      - $logger: '@Psr\Log\LoggerInterface'
+      
+  Oussema\HideByCountries\Domain\Repository\GeoLocationRepository:
+    arguments:
+      - $cache: '@cache.pages'
+      - $geoLocationService: '@Oussema\HideByCountries\Utility\Apis\AetherEpiasStrategy'
+
+  Oussema\HideByCountries\Utility\Apis\AetherEpiasStrategy:
+    arguments:
+      - $requestFactory: '@TYPO3\CMS\Core\Http\RequestFactory'
+      - $logger: '@Psr\Log\LoggerInterface'
+      - $extensionConfiguration: '@TYPO3\CMS\Core\Configuration\ExtensionConfiguration'
+    
+  Oussema\HideByCountries\Utility\Apis\GeoLocationApiInterface:
+    alias: Oussema\HideByCountries\Utility\Apis\\GeoLocationApiInterface
+      
