@@ -16,9 +16,9 @@ services:
   Oussema\HideByCountries\Domain\Repository\GeoLocationRepository:
     arguments:
       - $cache: '@cache.pages'
-      - $geoLocationService: '@Oussema\HideByCountries\Utility\Apis\AetherEpiasStrategy'
+      - $geoLocationService: '@Oussema\HideByCountries\Utility\Apis\AetherEpiasGeoLocationService'
 
-  Oussema\HideByCountries\Utility\Apis\AetherEpiasStrategy:
+  Oussema\HideByCountries\Utility\Apis\AetherEpiasGeoLocationService:
     arguments:
       - $requestFactory: '@TYPO3\CMS\Core\Http\RequestFactory'
       - $logger: '@Psr\Log\LoggerInterface'

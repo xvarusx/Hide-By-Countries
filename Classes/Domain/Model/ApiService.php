@@ -15,7 +15,7 @@ class ApiService
 
     private function setApiService(ExtensionConfiguration $extensionConfiguration): void
     {
-        $config = $extensionConfiguration->get('hide_by_countries');
+        $config = $extensionConfiguration->get('hidebycountries');
         $this->setApiEndPoint($config['apiEndPoint'] ?? 'https://aether.epias.ltd/ip2country/' );
         $this->setApiKey($config['apiKey']??'');
     }

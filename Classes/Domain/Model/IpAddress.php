@@ -20,16 +20,14 @@ final class IpAddress
     }
 
     private function setValue(string $value): void
-    {
-        if ($value === '') {
+    { 
+        if($value === '' || $value == '127.0.0.1') {
             $this->value = '234.162.28.227';
-        }
-
-        if (!filter_var($value, FILTER_VALIDATE_IP)) {
+        }elseif (!filter_var($value, FILTER_VALIDATE_IP)){
             throw new InvalidArgumentException('Invalid IP address format');
+        }else{
+            $this->value = $value;
         }
-
-        $this->value = $value;
     }
 
     public function toString(): string

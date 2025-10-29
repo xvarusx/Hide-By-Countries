@@ -15,10 +15,10 @@
             "role": "Developer"
         }
     ],
-    "homepage": "https://extensions.typo3.org/extension/hide_by_countries/",
+    "homepage": "https://extensions.typo3.org/extension/Hide-By-Countries/",
     "support": {
-        "issues": "https://github.com/xvarusx/hide-by-countires/issues",
-        "source": "https://github.com/xvarusx/hide-by-countires"
+        "issues": "https://github.com/xvarusx/Hide-By-Countries/issues",
+        "source": "https://github.com/xvarusx/Hide-By-Countries"
     },
     "minimum-stability": "dev",
     "require": {

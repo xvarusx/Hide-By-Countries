@@ -26,36 +26,38 @@ class GeoLocationMiddleware implements MiddlewareInterface
         private readonly LoggerInterface $logger
     ) {}
 
-    public function process(ServerRequestInterface $request,RequestHandlerInterface $handler): ResponseInterface 
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
             $countryCode = $this->getCountryCode($request);
-            
-            // Set cookie for future requests
-            setcookie(
-                self::COOKIE_NAME,
-                $countryCode->toString(),
-                [
-                    'expires' => time() + self::COOKIE_LIFETIME,
-                    'path' => '/',
-                    'secure' => true,
-                    'httponly' => true,
-                    'samesite' => 'Lax'
-                ]
-            );
-            
+
             // Add country code to request attributes for later use
             $request = $request->withAttribute('country_code', $countryCode);
-            
+
         } catch (\Exception $e) {
-            // Log error but don't block request processing
             $this->logger->error('Failed to determine user country', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
         }
 
-        return $handler->handle($request);
+        // Handle request and modify the response (PSR-7) to set cookie header
+        $response = $handler->handle($request);
+
+        if (isset($countryCode) && $countryCode instanceof CountryCode) {
+            $cookieValue = rawurlencode($countryCode->toString());
+            $expires = gmdate('D, d-M-Y H:i:s T', time() + self::COOKIE_LIFETIME);
+            $cookieHeader = sprintf(
+                '%s=%s; Expires=%s; Path=/; Secure; HttpOnly; SameSite=Lax',
+                self::COOKIE_NAME,
+                $cookieValue,
+                $expires
+            );
+
+            $response = $response->withAddedHeader('Set-Cookie', $cookieHeader);
+        }
+
+        return $response;
     }
 
     private function getCountryCode(ServerRequestInterface $request): CountryCode
