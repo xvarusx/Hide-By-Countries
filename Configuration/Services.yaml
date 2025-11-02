@@ -7,23 +7,36 @@ services:
   Oussema\HideByCountries\:
     resource: '../Classes/*'
     exclude: '../Classes/Domain/Model/*'
-  Oussema\HideByCountries\Middleware\GeoLocationMiddleware:
-    arguments:
-      - $geoLocationRepository: '@Oussema\HideByCountries\Domain\Repository\GeoLocationRepository'
-      - $extensionConfiguration: '@TYPO3\CMS\Core\Configuration\ExtensionConfiguration'
-      - $logger: '@Psr\Log\LoggerInterface'
-      
-  Oussema\HideByCountries\Domain\Repository\GeoLocationRepository:
-    arguments:
-      - $cache: '@cache.pages'
-      - $geoLocationService: '@Oussema\HideByCountries\Utility\Apis\AetherEpiasGeoLocationService'
 
-  Oussema\HideByCountries\Utility\Apis\AetherEpiasGeoLocationService:
+  Oussema\HideByCountries\Domain\Model\Dto\ExtConfiguration:
+    public: true
+
+  cache.hidebycountries:
+    class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
+    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
+    arguments: ['hidebycountries']
+
+  Oussema\HideByCountries\Middleware\GeoLocationMiddleware:
+    public: true
     arguments:
-      - $requestFactory: '@TYPO3\CMS\Core\Http\RequestFactory'
-      - $logger: '@Psr\Log\LoggerInterface'
-      - $extensionConfiguration: '@TYPO3\CMS\Core\Configuration\ExtensionConfiguration'
-    
-  Oussema\HideByCountries\Utility\Apis\GeoLocationApiInterface:
-    alias: Oussema\HideByCountries\Utility\Apis\\GeoLocationApiInterface
+      - '@Oussema\HideByCountries\Domain\Model\Dto\ExtConfiguration'
+      - '@Oussema\HideByCountries\Domain\Repository\GeoLocationRepository'
+      - '@Oussema\HideByCountries\Utility\SessionManagementUtility'
       
+  Oussema\HideByCountries\Utility\Apis\AetherEpiasGeoLocationService:
+    public: true
+    arguments:
+      - '@TYPO3\CMS\Core\Http\RequestFactory'
+      - '@TYPO3\CMS\Core\Configuration\ExtensionConfiguration'
+
+  Oussema\HideByCountries\Domain\Repository\GeoLocationRepository:
+    public: true
+    arguments: 
+      - '@cache.hidebycountries'
+      - '@Oussema\HideByCountries\Domain\Model\Dto\ExtConfiguration'
+  Oussema\HideByCountries\EventListener\HideCeEventListener:
+    arguments: 
+      - '@Oussema\HideByCountries\Utility\SessionManagementUtility'
+  Oussema\HideByCountries\Utility\Apis\GeoLocationApiInterface:
+    alias: Oussema\HideByCountries\Utility\Apis\AetherEpiasGeoLocationService
+    public: true

@@ -1,11 +1,14 @@
 {
-    "name": "oussema/hide-by-countries",
+    "name": "oussema/hidebycountries",
     "description": "Hide Content Elements depends on the frontend user country",
     "type": "typo3-cms-extension",
     "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "keywords": [
         "TYPO3",
         "extension",
+        "hide",
         "countries"
     ],
     "authors": [
@@ -15,28 +18,31 @@
             "role": "Developer"
         }
     ],
-    "homepage": "https://extensions.typo3.org/extension/Hide-By-Countries/",
+    "homepage": "https://extensions.typo3.org/extension/hidebycountries/",
     "support": {
         "issues": "https://github.com/xvarusx/Hide-By-Countries/issues",
         "source": "https://github.com/xvarusx/Hide-By-Countries"
     },
-    "minimum-stability": "dev",
     "require": {
         "php": ">= 8.1 < 8.5",
         "typo3/cms-backend": "^13.1",
-        "typo3/cms-core": "^13.1",
+        "typo3/cms-core": "^13.4.15",
         "typo3/cms-extbase": "^13.1",
         "typo3/cms-fluid": "^13.1",
         "typo3/cms-frontend": "^13.1",
         "typo3/cms-install": "^13.1"
     },
     "require-dev": {
+        "a9f/fractor-extension-installer": "^0.5.6",
+        "a9f/typo3-fractor": "^0.5.6",
         "friendsofphp/php-cs-fixer": "^3.47.1",
-        "phpstan/phpdoc-parser": "^1.12.10",
         "phpunit/phpunit": "^10.5.58",
+        "ssch/typo3-rector": "^3.7",
         "typo3/coding-standards": "^0.5.5",
-        "typo3/testing-framework": "^8.2.7",
-        "webmozart/assert": "^1.11.0"
+        "typo3/testing-framework": "^8.2.7"
+    },
+    "replace": {
+        "typo3-ter/hidebycountries": "self.version"
     },
     "autoload": {
         "psr-4": {
@@ -68,6 +74,7 @@
         }
     },
     "scripts": {
+        "test":"Build/Scripts/runTests.sh -t 13 -p 8.3  -s composerInstallLowest",
         "post-autoload-dump": [
             "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
         ],

@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace Oussema\HideByCountries\EventListener;
 
+use Oussema\HideByCountries\Utility\SessionManagementUtility;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Frontend\ContentObject\Event\AfterStdWrapFunctionsExecutedEvent;
 
 final class HideCeEventListener
 {
+    
+    public function __construct(
+        private readonly SessionManagementUtility $sessionManagement,
+        ){}
     #[AsEventListener(
-        identifier: 'HideByCountries/hide-content-element',
+        identifier: 'hidebycountries/hide-content-element',
     )]
     public function __invoke(AfterStdWrapFunctionsExecutedEvent $event): void
     {
@@ -19,7 +24,8 @@ final class HideCeEventListener
         if (!$hiddenCountries) {
             return;
         }
-        $userCountry = $event->getContentObjectRenderer()->getRequest()->getCookieParams()['user_country'] ?? null;
+        $userCountry = $this->sessionManagement->getCountryFromSession($event->getContentObjectRenderer()->getRequest());
+        
         if ($userCountry) {
             $hiddenCountries = explode(',', $hiddenCountries ?? '');
             if (in_array($userCountry, $hiddenCountries, true)) {

@@ -1,0 +1,6 @@
+tt_content
+,uid,pid,CType,header,tx_hidebycountries,deleted,hidden,sorting,sys_language_uid
+,100,1,text,CE_HIDDEN_FR,FR,0,0,128,0
+,101,1,text,CE_VISIBLE_GLOBAL,,0,0,256,0
+,102,1,text,MULTI_COUNTRY_CE,"FR,IT,US",0,0,384,0
+

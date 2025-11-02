@@ -1,21 +1,22 @@
 <?php
 
-namespace Oussema\HideByCountries\Tests\Unit;
+namespace Oussema\HideByCountries\Tests\Unit\Domain\Repository;
 
-use PHPUnit\Framework\TestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use Oussema\HideByCountries\Domain\Model\CountryCode;
 use Oussema\HideByCountries\Utility\Apis\GeoLocationApiInterface;
 use Oussema\HideByCountries\Domain\Repository\GeoLocationRepository;
 use Oussema\HideByCountries\Domain\Model\IpAddress;
 
-final class GeoLocationRepositoryTest extends TestCase
+final class GeoLocationRepositoryTest extends UnitTestCase
 {
     protected FrontendInterface $cache;
     protected GeoLocationApiInterface $service;
     protected GeoLocationRepository $repository;
     protected function setUp(): void
     {
+        parent::setUp();
         $this->cache = $this->createMock(FrontendInterface::class);
         $this->service = $this->createMock(GeoLocationApiInterface::class);
         $this->repository = new GeoLocationRepository($this->service, $this->cache);

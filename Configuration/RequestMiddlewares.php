@@ -6,7 +6,7 @@ return [
     'frontend' => [
         'middleware-geolocation' => [
             'target' => GeoLocationMiddleware::class,
-            'before' => ['typo3/cms-frontend/base-redirect-resolver'],
+            'before' => ['typo3/cms-frontend/content-length-headers'],
         ],
     ],
 ];

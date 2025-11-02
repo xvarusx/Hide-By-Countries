@@ -4,38 +4,39 @@ declare(strict_types=1);
 
 namespace Oussema\HideByCountries\Domain\Repository;
 
-use Oussema\HideByCountries\Domain\Model\IpAddress;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
-use Oussema\HideByCountries\Domain\Model\CountryCode;
-use Oussema\HideByCountries\Utility\Apis\GeoLocationApiInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Oussema\HideByCountries\Domain\Model\Dto\ExtConfiguration;
 
 class GeoLocationRepository
 {
     private const CACHE_LIFETIME = 86400;
 
     public function __construct(
-        private readonly GeoLocationApiInterface $geoLocationService,
-        private readonly FrontendInterface $cache
+        private readonly FrontendInterface $cache,
+        private readonly ExtConfiguration $extensionConfiguration,
     ) {
     }
 
-    public function findCountryForIp(IpAddress $ipAddress): CountryCode
+    public function findCountryForIp(string $ipAddress): string
     {
-        $cacheIdentifier = 'geoip_' . $ipAddress->toString();
+            $cacheIdentifier = sha1('geoip_'.$ipAddress);
+            $value = $this->cache->get($cacheIdentifier);
+            if ($value != false) {
+                return $value;
+            }
+            $classNameSpace = $this->extensionConfiguration->getClassNameSpace();
+            if(empty($classNameSpace) && !class_exists($classNameSpace)){
+                $classNameSpace = 'Oussema\HideByCountries\Utility\Apis\AetherEpiasGeoLocationService';
+            }
+            $countryCode = GeneralUtility::makeInstance($classNameSpace)->getCountryForIp($ipAddress);
 
-        if ($this->cache->has($cacheIdentifier)) {
-            return CountryCode::fromString($this->cache->get($cacheIdentifier));
-        }
-
-        $countryCode = $this->geoLocationService->getCountryForIp($ipAddress);
-
-        $this->cache->set(
-            $cacheIdentifier,
-            $countryCode->toString(),
-            [],
-            self::CACHE_LIFETIME
-        );
-
+            $this->cache->set(
+                $cacheIdentifier,
+                $countryCode,
+                [],
+                self::CACHE_LIFETIME
+            );
         return $countryCode;
     }
 }

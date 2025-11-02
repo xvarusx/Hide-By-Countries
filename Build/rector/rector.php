@@ -19,7 +19,6 @@ return RectorConfig::configure()
         __DIR__ . '/../../Tests',
         __DIR__ . '/../../ext_emconf.php',
         __DIR__ . '/../../ext_localconf.php',
-        __DIR__ . '/../../ext_tables.php',
     ])
     //->withPhpSets(php81: true)
     ->withPhpVersion(PhpVersion::PHP_81)

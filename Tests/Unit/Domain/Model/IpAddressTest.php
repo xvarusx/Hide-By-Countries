@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Oussema\HideByCountries\Tests\Unit;
+namespace Oussema\HideByCountries\Tests\Unit\Domain\Model;
 
-use PHPUnit\Framework\TestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use Oussema\HideByCountries\Domain\Model\IpAddress;
 
-final class IpAddressTest extends TestCase
+final class IpAddressTest extends UnitTestCase
 {
     public function testValidIp(): void
     {
