@@ -73,7 +73,6 @@ class ExtensionIntegrationTest extends FunctionalTestCase
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['hidebycountries']['classNameSpace'] =
               \Oussema\HideByCountries\Tests\Functional\FakeGeoLocationService::class;
-        echo 'Fake class registered: ' . $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['hidebycountries']['classNameSpace'] . PHP_EOL;
 
     }
 
