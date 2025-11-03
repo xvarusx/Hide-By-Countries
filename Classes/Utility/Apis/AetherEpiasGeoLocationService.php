@@ -7,13 +7,16 @@ namespace Oussema\HideByCountries\Utility\Apis;
 use GuzzleHttp\Exception\GuzzleException;
 use Oussema\HideByCountries\Utility\GeoLocationException;
 use TYPO3\CMS\Core\Http\RequestFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class AetherEpiasGeoLocationService implements GeoLocationApiInterface
 {
     public const ENDPOINT = 'https://aether.epias.ltd/ip2country/';
-    public function __construct(
-        private readonly RequestFactory $requestFactory,
-    ) {}
+    private RequestFactory $requestFactory;
+    public function __construct()
+    {
+        $this->requestFactory =  GeneralUtility::makeInstance(RequestFactory::class);
+    }
 
     public function getCountryForIp(string $ipAddress): string
     {

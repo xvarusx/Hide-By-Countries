@@ -1,12 +1,38 @@
 page = PAGE
-page.10 = CONTENT
-page.10 {
-  table = tt_content
-  select.pidInList = this
-  renderObj = COA
-  renderObj {
-    10 = TEXT
-    10.field = header
-    10.wrap = <div class="ce">|</div>
-  }
+page {
+    10 = FLUIDTEMPLATE
+    10 {
+        templateName = TEXT
+        templateName.value = Default
+        
+        templateRootPaths {
+            0 = EXT:hidebycountries/Tests/Functional/Fixtures/Templates/
+        }
+        
+        variables {
+            content = CONTENT
+            content {
+                table = tt_content
+                select {
+                    orderBy = sorting
+                    where = {#colPos}=0
+                }
+                renderObj = COA
+                renderObj {
+                    10 = TEXT
+                    10.field = header
+                    10.wrap = <h2>|</h2>
+                    
+                    20 = TEXT
+                    20.field = bodytext
+                    20.wrap = <p>|</p>
+                }
+            }
+        }
+    }
+    
+    config {
+        no_cache = 1
+        disableAllHeaderCode = 1
+    }
 }

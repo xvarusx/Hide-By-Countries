@@ -7,7 +7,7 @@ namespace Oussema\HideByCountries\Domain\Model\Dto;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class ExtConfiguration
+class ExtConfiguration
 {
     /** @var bool */
     protected $developemntMode = true;

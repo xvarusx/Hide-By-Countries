@@ -2,101 +2,151 @@
 
 declare(strict_types=1);
 
-namespace Oussema\HideByCountries\Tests\Unit\Middelware;
+namespace Oussema\HideByCountries\Tests\Unit\Middleware;
 
-use Oussema\HideByCountries\Domain\Model\CountryCode;
+use Oussema\HideByCountries\Domain\Model\Dto\ExtConfiguration;
 use Oussema\HideByCountries\Domain\Repository\GeoLocationRepository;
 use Oussema\HideByCountries\Middleware\GeoLocationMiddleware;
+use Oussema\HideByCountries\Utility\SessionManagementUtility;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 final class GeoLocationMiddlewareTest extends UnitTestCase
 {
-    private GeoLocationRepository $geoLocationRepository;
-    private ExtensionConfiguration $extensionConfiguration;
-    private ServerRequestInterface $request;
-    private RequestHandlerInterface $handler;
-    private ResponseInterface $response;
-    private GeoLocationMiddleware $middleware;
+    private GeoLocationMiddleware $subject;
+    private ExtConfiguration|MockObject $extConfigMock;
+    private GeoLocationRepository|MockObject $geoRepoMock;
+    private SessionManagementUtility|MockObject $sessionMock;
+    private ServerRequestInterface|MockObject $requestMock;
+    private RequestHandlerInterface|MockObject $handlerMock;
+    private ResponseInterface|MockObject $responseMock;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        // Create mocks for dependencies
-        $this->geoLocationRepository = $this->createMock(GeoLocationRepository::class);
-        $this->extensionConfiguration = $this->createMock(ExtensionConfiguration::class);
+        $this->extConfigMock = $this->createMock(ExtConfiguration::class);
+        $this->geoRepoMock = $this->createMock(GeoLocationRepository::class);
+        $this->sessionMock = $this->createMock(SessionManagementUtility::class);
+        $this->requestMock = $this->createMock(ServerRequestInterface::class);
+        $this->handlerMock = $this->createMock(RequestHandlerInterface::class);
+        $this->responseMock = $this->createMock(ResponseInterface::class);
 
-        // Create request and response mocks
-        $this->request = $this->createMock(ServerRequestInterface::class);
-        $this->response = $this->createMock(ResponseInterface::class);
-
-        // Configure request mock with needed methods
-        $this->request->method('getCookieParams')->willReturn([]);
-        $this->request->method('getServerParams')->willReturn(['REMOTE_ADDR' => '127.0.0.1']);
-        $this->request->method('withAttribute')->willReturn($this->request);
-
-        // Create handler mock
-        $this->handler = $this->createMock(RequestHandlerInterface::class);
-        $this->handler->method('handle')->willReturn($this->response);
-
-        // Create middleware instance with mocked dependencies
-        $this->middleware = new GeoLocationMiddleware(
-            $this->geoLocationRepository,
-            $this->extensionConfiguration
+        $this->subject = new GeoLocationMiddleware(
+            $this->extConfigMock,
+            $this->geoRepoMock,
+            $this->sessionMock
         );
     }
 
-    public function testProcessAddsSetCookieHeaderAndAttribute(): void
+    /**
+     * @test
+     */
+    public function processDoesNothingIfSessionAlreadyHasCountry(): void
     {
-        // Configure mocks for this specific test
-        $countryCode = CountryCode::fromString('US');
-
-        // Configure GeoLocationRepository mock
-        $this->geoLocationRepository
-            ->method('findCountryForIp')
-            ->willReturn($countryCode);
-
-        // Configure ExtensionConfiguration mock
-        $this->extensionConfiguration
-            ->method('get')
-            ->willReturnMap([
-                ['hidebycountries', 'developemntMode', false],
-                ['hidebycountries', 'publicIpAddressForTesting', null],
-            ]);
-
-        // Configure response mock for header addition
-        $this->response
+        $this->sessionMock
             ->expects(self::once())
-            ->method('withAddedHeader')
-            ->with(
-                'Set-Cookie',
-                self::stringContains('user_country=US')
-            )
-            ->willReturn($this->response);
+            ->method('getCountryFromSession')
+            ->with($this->requestMock)
+            ->willReturn('FR');
 
-        // Execute middleware
-        $result = $this->middleware->process($this->request, $this->handler);
+        $this->geoRepoMock
+            ->expects(self::never())
+            ->method('findCountryForIp');
 
-        // Assertions
-        self::assertInstanceOf(ResponseInterface::class, $result);
-        self::assertSame($this->response, $result);
+        $this->handlerMock
+            ->expects(self::once())
+            ->method('handle')
+            ->with($this->requestMock)
+            ->willReturn($this->responseMock);
+
+        $response = $this->subject->process($this->requestMock, $this->handlerMock);
+        self::assertInstanceOf(ResponseInterface::class, $response);
     }
 
-    public function testProcessHandlesExceptionGracefully(): void
+    /**
+     * @test
+     */
+    public function processStoresCountryInSessionIfNotAlreadySet(): void
     {
-        // Configure GeoLocationRepository to throw an exception
-        $this->geoLocationRepository
+        $ipAddress = '8.8.8.8';
+        $countryCode = 'US';
+
+        $this->sessionMock
+            ->expects(self::once())
+            ->method('getCountryFromSession')
+            ->with($this->requestMock)
+            ->willReturn(null);
+
+        $this->extConfigMock
+            ->method('getDevelopemntMode')
+            ->willReturn(false);
+
+        $this->requestMock
+            ->method('getServerParams')
+            ->willReturn(['REMOTE_ADDR' => $ipAddress]);
+
+        $this->geoRepoMock
+            ->expects(self::once())
             ->method('findCountryForIp')
-            ->willThrowException(new \Exception('API Error'));
+            ->with($ipAddress)
+            ->willReturn($countryCode);
 
-        // Execute middleware
-        $result = $this->middleware->process($this->request, $this->handler);
+        $this->sessionMock
+            ->expects(self::once())
+            ->method('storeCountryInSession')
+            ->with($countryCode, $this->requestMock);
 
-        // Should still return response even after error
-        self::assertInstanceOf(ResponseInterface::class, $result);
+        $this->handlerMock
+            ->expects(self::once())
+            ->method('handle')
+            ->willReturn($this->responseMock);
+
+        $response = $this->subject->process($this->requestMock, $this->handlerMock);
+        self::assertInstanceOf(ResponseInterface::class, $response);
+    }
+
+    /**
+     * @test
+     */
+    public function processUsesDevelopmentModeIpWhenEnabled(): void
+    {
+        $testIp = '234.162.28.227';
+        $countryCode = 'FR';
+
+        $this->sessionMock
+            ->expects(self::once())
+            ->method('getCountryFromSession')
+            ->willReturn(null);
+
+        $this->extConfigMock
+            ->method('getDevelopemntMode')
+            ->willReturn(true);
+
+        $this->extConfigMock
+            ->method('getPublicIpAddressForTesting')
+            ->willReturn($testIp);
+
+        $this->geoRepoMock
+            ->expects(self::once())
+            ->method('findCountryForIp')
+            ->with($testIp)
+            ->willReturn($countryCode);
+
+        $this->sessionMock
+            ->expects(self::once())
+            ->method('storeCountryInSession')
+            ->with($countryCode, $this->requestMock);
+
+        $this->handlerMock
+            ->expects(self::once())
+            ->method('handle')
+            ->willReturn($this->responseMock);
+
+        $response = $this->subject->process($this->requestMock, $this->handlerMock);
+        self::assertInstanceOf(ResponseInterface::class, $response);
     }
 }

@@ -19,16 +19,19 @@ class GeoLocationRepository
 
     public function findCountryForIp(string $ipAddress): string
     {
-        $cacheIdentifier = sha1('geoip_' . $ipAddress);
+        $cacheIdentifier =  sha1('geoip_' . $ipAddress);
         $value = $this->cache->get($cacheIdentifier);
         if ($value != false) {
             return $value;
         }
         $classNameSpace = $this->extensionConfiguration->getClassNameSpace();
-        if(empty($classNameSpace) && !class_exists($classNameSpace)) {
+
+        if (empty($classNameSpace) || !class_exists($classNameSpace)) {
             $classNameSpace = 'Oussema\HideByCountries\Utility\Apis\AetherEpiasGeoLocationService';
         }
+
         $countryCode = GeneralUtility::makeInstance($classNameSpace)->getCountryForIp($ipAddress);
+
         $this->cache->set(
             $cacheIdentifier,
             $countryCode,

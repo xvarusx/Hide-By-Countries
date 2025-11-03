@@ -22,12 +22,6 @@ services:
       - '@Oussema\HideByCountries\Domain\Model\Dto\ExtConfiguration'
       - '@Oussema\HideByCountries\Domain\Repository\GeoLocationRepository'
       - '@Oussema\HideByCountries\Utility\SessionManagementUtility'
-      
-  Oussema\HideByCountries\Utility\Apis\AetherEpiasGeoLocationService:
-    public: true
-    arguments:
-      - '@TYPO3\CMS\Core\Http\RequestFactory'
-      - '@TYPO3\CMS\Core\Configuration\ExtensionConfiguration'
 
   Oussema\HideByCountries\Domain\Repository\GeoLocationRepository:
     public: true
@@ -37,6 +31,7 @@ services:
   Oussema\HideByCountries\EventListener\HideCeEventListener:
     arguments: 
       - '@Oussema\HideByCountries\Utility\SessionManagementUtility'
+      
   Oussema\HideByCountries\Utility\Apis\GeoLocationApiInterface:
     alias: Oussema\HideByCountries\Utility\Apis\AetherEpiasGeoLocationService
     public: true

@@ -1,3 +1,4 @@
 pages
-,uid,pid,title,module,is_siteroot,doktype,hidden,deleted
-,1,0,Root,null,1,1,0,O
+,uid,pid,title,slug,doktype,hidden,deleted
+,1,0,"Home","/",1,0,0
+,2,1,"Subpage","/subpage",1,0,0
