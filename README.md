@@ -15,7 +15,7 @@
 - Cookie-based tracking for visitor’s country for performance.
 - Caching support to reduce repeated lookups.
 - Optional indicator in backend page preview indicating restricted CEs.
-- Compatible with TYPO3 v12 and v13.
+- Compatible with v13.
 
 ---
 
